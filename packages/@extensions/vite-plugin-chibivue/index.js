@@ -9,9 +9,9 @@ export default function vitePluginChibivue() {
     transform(code, id) {
       if (!filter(id)) return;
 
-      const { descripter } = parse(code, { filename: id });
+      const { descriptor } = parse(code, { filename: id });
 
-      console.log(119, descripter);
+      console.log(119, id, descriptor);
 
       return { code: `export default {}` };
     },
