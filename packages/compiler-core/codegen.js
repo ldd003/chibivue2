@@ -1,9 +1,8 @@
 import { NodeTypes } from "./ast.js";
 import { toHandlerKey } from "../shared/index.js";
 
-export const generate = ({ children }) => {
-  return `
-  return function render(_ctx){
+export const generate = ({ children }, option) => {
+  return `${option.isBrowser ? "return " : ""}function render(_ctx){
     with(_ctx){
       const {h} = ChibiVue;
       return ${genNode(children[0])}
