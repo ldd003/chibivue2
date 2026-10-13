@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import { createFilter } from "vite";
 import { parse } from "../../compiler-sfc/index.js";
 import { compile } from "../../compiler-dom/index.js";
@@ -8,11 +9,28 @@ export default function vitePluginChibivue() {
 
   return {
     name: "vite:chibivue",
+    resolveId(id) {
+      if (id.match(/\.vue\.css$/)) {
+        return id;
+      }
+    },
+    load(id) {
+      if (id.match(/\.vue\.css$/)) {
+        const filename = id.replace(/\.css$/, "");
+        const content = fs.readFileSync(filename, "utf-8");
+        const { descriptor } = parse(content, { filename });
+        const styles = descriptor.styles.map((it) => it.content).join("\n");
+        return {
+          code: styles,
+        };
+      }
+    },
     transform(code, id) {
       if (!filter(id)) return;
 
       const outputs = [];
       outputs.push("import * as ChibiVue from 'chibivue'\n");
+      outputs.push(`import '${id}.css'`);
       console.log(112233, code, parse(code, { filename: id }));
 
       const { descriptor } = parse(code, { filename: id });

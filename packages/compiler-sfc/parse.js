@@ -40,6 +40,8 @@ export function parse(
     }
   });
 
+  console.log(177777, descriptor.styles[0]);
+
   return {
     descriptor,
   };
